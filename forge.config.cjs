@@ -12,16 +12,7 @@ module.exports = {
   },
   rebuildConfig: {},
   makers: [
-    {
-      name: "@electron-forge/maker-squirrel",
-      config: {
-        name: "dugo-receipt-app",
-        authors: "TechTrove Tech",
-        description: "Ugo Water Receipt Management Application",
-        setupIcon: "./public/logo.ico",
-        noMsi: true,
-      },
-    },
+    
     {
       name: "@electron-forge/maker-zip",
       platforms: ["win32"],
