@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@font-face {
+  font-family: RubikBlack;
+  src: url("./assets/fonts/Rubik-Black.ttf");
+}
+
+@font-face {
+  font-family: RubikBold;
+  src: url("./assets/fonts/Rubik-Bold.ttf");
+}
+
+@font-face {
+  font-family: RubikMedium;
+  src: url("./assets/fonts/Rubik-Medium.ttf");
+}
+
+@font-face {
+  font-family: RubikRegular;
+  src: url("./assets/fonts/Rubik-Regular.ttf");
+}
+
+@font-face {
+  font-family: RubikSemiBold;
+  src: url("./assets/fonts/Rubik-SemiBold.ttf");
+}
+@font-face {
+  font-family: RubikLight;
+  src: url("./assets/fonts/Rubik-Light.ttf");
+}
+@font-face {
+  font-family: RubikItalic;
+  src: url("./assets/fonts/Rubik-Italic.ttf");
+}
+@font-face {
+  font-family: SCBold;
+  src: url("./assets/fonts/SourceCodePro-Bold.ttf");
+}
+@font-face {
+  font-family: SCMedium;
+  src: url("./assets/fonts/SourceCodePro-Medium.ttf");
+}
+@font-face {
+  font-family: SCRegular;
+  src: url("./assets/fonts/SourceCodePro-Regular.ttf");
+}
+@font-face {
+  font-family: SCItalic;
+  src: url("./assets/fonts/SourceCodePro-Italic.ttf");
+}
+@font-face {
+  font-family: SCLight;
+  src: url("./assets/fonts/SourceCodePro-Light.ttf");
+}
+@font-face {
+  font-family: SCLightItalic;
+  src: url("./assets/fonts/SourceCodePro-LightItalic.ttf");
+}
+@font-face {
+  font-family: SCSemiBold;
+  src: url("./assets/fonts/SourceCodePro-SemiBold.ttf");
+}
+@theme {
+  --font-rubik-black: "RubikBlack", sans-serif;
+  --font-rubik-bold: "RubikBold", sans-serif;
+  --font-rubik-medium: "RubikMedium", sans-serif;
+  --font-rubik-regular: "RubikRegular", sans-serif;
+  --font-rubik-semi-bold: "RubikSemiBold", sans-serif;
+  --font-rubik-light: "RubikLight", sans-serif;
+  --font-rubik-italic: "RubikItalic", sans-serif;
+  --font-sc-bold: "SCBold", monospace;
+  --font-sc-medium: "SCMedium", monospace;
+  --font-sc-regular: "SCRegular", monospace;
+  --font-sc-italic: "SCItalic", monospace;
+  --font-sc-light: "SCLight", monospace;
+  --font-sc-light-italic: "SCLightItalic", monospace;
+  --font-sc-semi-bold: "SCSemiBold", monospace;
+}

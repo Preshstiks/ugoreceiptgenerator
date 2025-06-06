@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Receipt Paper -->
+  <rect x="40" y="30" width="120" height="140" rx="4" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="2"/>
+  
+  <!-- Receipt Lines -->
+  <line x1="50" y1="60" x2="150" y2="60" stroke="#D1D5DB" stroke-width="2"/>
+  <line x1="50" y1="80" x2="150" y2="80" stroke="#D1D5DB" stroke-width="2"/>
+  <line x1="50" y1="100" x2="150" y2="100" stroke="#D1D5DB" stroke-width="2"/>
+  <line x1="50" y1="120" x2="150" y2="120" stroke="#D1D5DB" stroke-width="2"/>
+  <line x1="50" y1="140" x2="150" y2="140" stroke="#D1D5DB" stroke-width="2"/>
+  
+  <!-- Magnifying Glass -->
+  <circle cx="100" cy="100" r="40" stroke="#9CA3AF" stroke-width="2" fill="none"/>
+  <line x1="130" y1="130" x2="150" y2="150" stroke="#9CA3AF" stroke-width="2"/>
+  
+  <!-- Question Mark -->
+  <text x="100" y="110" font-family="Arial" font-size="40" fill="#9CA3AF" text-anchor="middle">?</text>
+</svg> 
