@@ -146,6 +146,7 @@ export const PrintReceipt = () => {
                 date:
                   receiptData.createdAt?.toDate().toLocaleDateString() ||
                   new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
                 items: receiptData.items.map((item) => ({
                   productType:
                     item.name === "Bottled Water" ? "bottled" : "satchet",

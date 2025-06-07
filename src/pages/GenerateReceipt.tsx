@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 type ReceiptFormData = {
   customerName: string;
   date: string;
+  time: string;
   items: Array<{
     productType: "bottled" | "satchet";
     quantity: number;
@@ -57,8 +58,18 @@ export const GenerateReceipt = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [formData, setFormData] = useState<ReceiptFormData>({
     customerName: "",
-    date: new Date().toISOString().split("T")[0],
-    items: [{ productType: "bottled", quantity: 1, price: 0 }],
+    date: new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+    time: new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }),
+    items: [],
     notes: "",
   });
 
@@ -157,8 +168,18 @@ export const GenerateReceipt = () => {
       // Reset form
       setFormData({
         customerName: "",
-        date: new Date().toISOString().split("T")[0],
-        items: [{ productType: "bottled", quantity: 1, price: 0 }],
+        date: new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        time: new Date().toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        }),
+        items: [],
         notes: "",
       });
     } catch (error) {
@@ -296,6 +317,21 @@ export const GenerateReceipt = () => {
                 value={formData.date}
                 onChange={(e) =>
                   setFormData({ ...formData, date: e.target.value })
+                }
+                className="w-full px-4 text-sm py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent transition-colors"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-gray-700">
+                Time
+              </label>
+              <input
+                type="time"
+                value={formData.time}
+                onChange={(e) =>
+                  setFormData({ ...formData, time: e.target.value })
                 }
                 className="w-full px-4 text-sm py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent transition-colors"
                 required
