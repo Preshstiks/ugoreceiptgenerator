@@ -1,10 +1,11 @@
-export type ReceiptFormData = {
+export interface ReceiptFormData {
   customerName: string;
   date: string;
-  items: Array<{
+  time: string;
+  items: {
     productType: "bottled" | "satchet";
     quantity: number;
     price: number;
-  }>;
+  }[];
   notes: string;
-};
+}

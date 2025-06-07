@@ -87,7 +87,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden bg-white font-[family-name:var(--font-neue-montrealmedium)]">
+    <div className="min-h-screen font-rubik-regular flex flex-col items-center justify-center p-4 relative overflow-hidden bg-white">
       <div className="absolute top-0 left-0 w-[1200px] h-[2000px] bg-[conic-gradient(at_top_left,#333333,#000000,#444444,#111111,#222222,#505050)] blur-[120px] opacity-80 -translate-x-[20%] -translate-y-[60%]" />
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-[200%] h-[180vh] bg-white transform translate-y-[20%] rotate-[-5deg] origin-top-right" />
@@ -163,7 +163,12 @@ export const Login = () => {
                 />
               </div>
 
-              {error && <div className="text-red-500 text-sm">{error}</div>}
+              {error && (
+                <div className="text-red-500 text-xs bg-red-500/20 font-rubik-regular p-3 rounded-[8px]">
+                  Invalid Email or Password. Please Enter the correct
+                  credientials.
+                </div>
+              )}
 
               <div className="flex items-center">
                 <Field

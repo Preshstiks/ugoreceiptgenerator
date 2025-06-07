@@ -109,7 +109,16 @@ export const Dashboard = () => {
         const twoDaysAgo = new Date(yesterday);
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
 
-        // Fetch current period data (today)
+        // Fetch all receipts
+        const allReceiptsQuery = query(collection(db, "receipts"));
+        const allReceiptsSnapshot = await getDocs(allReceiptsQuery);
+        const allReceipts = allReceiptsSnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+          createdAt: doc.data().createdAt,
+        })) as Receipt[];
+
+        // Fetch period data for comparison
         const currentPeriodQuery = query(
           collection(db, "receipts"),
           where("createdAt", ">=", Timestamp.fromDate(yesterday))
@@ -121,7 +130,6 @@ export const Dashboard = () => {
           createdAt: doc.data().createdAt,
         })) as Receipt[];
 
-        // Fetch previous period data (yesterday)
         const previousPeriodQuery = query(
           collection(db, "receipts"),
           where("createdAt", ">=", Timestamp.fromDate(twoDaysAgo)),
@@ -134,8 +142,8 @@ export const Dashboard = () => {
           createdAt: doc.data().createdAt,
         })) as Receipt[];
 
-        // Calculate current period stats
-        const currentTotalSales = currentPeriodData.reduce((sum, receipt) => {
+        // Calculate total sales for all receipts
+        const totalSalesAmount = allReceipts.reduce((sum, receipt) => {
           const receiptTotal = receipt.items.reduce(
             (itemSum: number, item: Items) => itemSum + item.total,
             0
@@ -143,13 +151,11 @@ export const Dashboard = () => {
           return sum + receiptTotal;
         }, 0);
 
-        const currentAverageOrder =
-          currentPeriodData.length > 0
-            ? currentTotalSales / currentPeriodData.length
-            : 0;
+        const averageOrderAmount =
+          allReceipts.length > 0 ? totalSalesAmount / allReceipts.length : 0;
 
-        // Calculate previous period stats
-        const previousTotalSales = previousPeriodData.reduce((sum, receipt) => {
+        // Calculate period changes
+        const currentPeriodSales = currentPeriodData.reduce((sum, receipt) => {
           const receiptTotal = receipt.items.reduce(
             (itemSum: number, item: Items) => itemSum + item.total,
             0
@@ -157,19 +163,25 @@ export const Dashboard = () => {
           return sum + receiptTotal;
         }, 0);
 
-        const previousAverageOrder =
-          previousPeriodData.length > 0
-            ? previousTotalSales / previousPeriodData.length
-            : 0;
+        const previousPeriodSales = previousPeriodData.reduce(
+          (sum, receipt) => {
+            const receiptTotal = receipt.items.reduce(
+              (itemSum: number, item: Items) => itemSum + item.total,
+              0
+            );
+            return sum + receiptTotal;
+          },
+          0
+        );
 
         setTotalSales({
-          current: currentTotalSales,
-          previous: previousTotalSales,
-          change: calculateChange(currentTotalSales, previousTotalSales),
+          current: totalSalesAmount,
+          previous: previousPeriodSales,
+          change: calculateChange(currentPeriodSales, previousPeriodSales),
         });
 
         setTotalReceipts({
-          current: currentPeriodData.length,
+          current: allReceipts.length,
           previous: previousPeriodData.length,
           change: calculateChange(
             currentPeriodData.length,
@@ -178,13 +190,16 @@ export const Dashboard = () => {
         });
 
         setAverageOrder({
-          current: currentAverageOrder,
-          previous: previousAverageOrder,
-          change: calculateChange(currentAverageOrder, previousAverageOrder),
+          current: averageOrderAmount,
+          previous: previousPeriodSales / (previousPeriodData.length || 1),
+          change: calculateChange(
+            currentPeriodSales / (currentPeriodData.length || 1),
+            previousPeriodSales / (previousPeriodData.length || 1)
+          ),
         });
 
         // Format and set the display data - only take the last 3 receipts
-        const formattedData = currentPeriodData
+        const formattedData = allReceipts
           .sort((a, b) => {
             const dateA = a.createdAt?.toDate() || new Date(0);
             const dateB = b.createdAt?.toDate() || new Date(0);

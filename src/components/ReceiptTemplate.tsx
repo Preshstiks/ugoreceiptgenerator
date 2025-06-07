@@ -5,16 +5,17 @@ import { useAuth } from "../context/AuthContext";
 import logo from "../assets/logo.png";
 import { ClipLoader } from "react-spinners";
 
-type ReceiptFormData = {
+export interface ReceiptFormData {
   customerName: string;
   date: string;
-  items: Array<{
+  time: string;
+  items: {
     productType: "bottled" | "satchet";
     quantity: number;
     price: number;
-  }>;
+  }[];
   notes: string;
-};
+}
 
 interface CompanyDetails {
   name: string;

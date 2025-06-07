@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   Timestamp,
+  writeBatch,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FiSearch, FiFilter, FiDownload, FiTrash2, FiX } from "react-icons/fi";
@@ -36,6 +37,7 @@ interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isDeleteAll?: boolean;
 }
 
 interface FilterOptions {
@@ -49,6 +51,7 @@ const DeleteConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
+  isDeleteAll = false,
 }: DeleteModalProps) => {
   if (!isOpen) return null;
 
@@ -56,11 +59,12 @@ const DeleteConfirmationModal = ({
     <div className="fixed inset-0 backdrop-blur-sm bg-black/30 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Delete Receipt
+          {isDeleteAll ? "Delete All Receipts" : "Delete Receipt"}
         </h2>
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this receipt? This action cannot be
-          undone.
+          {isDeleteAll
+            ? "Are you sure you want to delete all receipts? This action cannot be undone."
+            : "Are you sure you want to delete this receipt? This action cannot be undone."}
         </p>
         <div className="flex justify-end gap-3">
           <button
@@ -116,6 +120,7 @@ export const ReceiptsHistory = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] = useState(false);
 
   // Calculate pagination values
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -285,6 +290,26 @@ export const ReceiptsHistory = () => {
     }
   };
 
+  const handleDeleteAll = async () => {
+    try {
+      const batch = writeBatch(db);
+      const receiptsRef = collection(db, "receipts");
+      const querySnapshot = await getDocs(receiptsRef);
+
+      querySnapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+
+      await batch.commit();
+      setData([]);
+      setFilteredData([]);
+      setIsDeleteAllModalOpen(false);
+    } catch (error) {
+      console.error("Error deleting all receipts:", error);
+      alert("Error deleting all receipts. Please try again.");
+    }
+  };
+
   const handleDownload = async (receipt: Receipt) => {
     setSelectedReceipt(receipt);
     try {
@@ -315,6 +340,7 @@ export const ReceiptsHistory = () => {
               data={{
                 customerName: selectedReceipt.customerName,
                 date: selectedReceipt.date,
+                time: selectedReceipt.time,
                 items: selectedReceipt.items.map((item) => ({
                   productType:
                     item.name === "Bottled Water" ? "bottled" : "satchet",
@@ -343,6 +369,14 @@ export const ReceiptsHistory = () => {
         onConfirm={() => selectedReceiptId && handleDelete(selectedReceiptId)}
       />
 
+      {/* Delete All Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteAllModalOpen}
+        onClose={() => setIsDeleteAllModalOpen(false)}
+        onConfirm={handleDeleteAll}
+        isDeleteAll={true}
+      />
+
       {/* Receipt Preview Modal */}
       {selectedReceipt && (
         <ReceiptPreviewModal
@@ -352,6 +386,7 @@ export const ReceiptsHistory = () => {
           data={{
             customerName: selectedReceipt.customerName,
             date: selectedReceipt.date,
+            time: selectedReceipt.time,
             items: selectedReceipt.items.map((item) => ({
               productType:
                 item.name === "Bottled Water" ? "bottled" : "satchet",
@@ -379,6 +414,15 @@ export const ReceiptsHistory = () => {
           </p>
         </div>
         <div className="flex gap-4">
+          {filteredData.length > 0 && (
+            <button
+              onClick={() => setIsDeleteAllModalOpen(true)}
+              className="inline-flex items-center cursor-pointer px-4 py-2 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 transition-colors"
+            >
+              <FiTrash2 className="mr-2" />
+              Delete All
+            </button>
+          )}
           <button
             onClick={handleFilter}
             className="inline-flex items-center cursor-pointer px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
