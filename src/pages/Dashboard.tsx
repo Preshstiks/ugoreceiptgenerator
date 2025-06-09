@@ -15,6 +15,7 @@ import {
 import { db } from "../firebase/init";
 import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
+import { useAuth } from "../context/AuthContext";
 
 interface Items {
   name: string;
@@ -51,6 +52,7 @@ interface Stats {
 }
 
 export const Dashboard = () => {
+  const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<DisplayReceipt[]>([]);
   const [totalReceipts, setTotalReceipts] = useState<Stats>({
@@ -101,6 +103,24 @@ export const Dashboard = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
+
+        // Fetch all receipts for the current user
+        const allReceiptsQuery = query(
+          collection(db, "receipts"),
+          where("userId", "==", user.uid)
+        );
+        const allReceiptsSnapshot = await getDocs(allReceiptsQuery);
+        const allReceipts = allReceiptsSnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+          createdAt: doc.data().createdAt,
+        })) as Receipt[];
+
+        // Filter the data in memory instead of using complex queries
         const now = new Date();
         const yesterday = new Date(now);
         yesterday.setDate(yesterday.getDate() - 1);
@@ -109,40 +129,19 @@ export const Dashboard = () => {
         const twoDaysAgo = new Date(yesterday);
         twoDaysAgo.setDate(twoDaysAgo.getDate() - 1);
 
-        // Fetch all receipts
-        const allReceiptsQuery = query(collection(db, "receipts"));
-        const allReceiptsSnapshot = await getDocs(allReceiptsQuery);
-        const allReceipts = allReceiptsSnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-          createdAt: doc.data().createdAt,
-        })) as Receipt[];
+        // Filter current period data
+        const currentPeriodData = allReceipts.filter((receipt) => {
+          const receiptDate = receipt.createdAt?.toDate() || new Date(0);
+          return receiptDate >= yesterday;
+        });
 
-        // Fetch period data for comparison
-        const currentPeriodQuery = query(
-          collection(db, "receipts"),
-          where("createdAt", ">=", Timestamp.fromDate(yesterday))
-        );
-        const currentPeriodSnapshot = await getDocs(currentPeriodQuery);
-        const currentPeriodData = currentPeriodSnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-          createdAt: doc.data().createdAt,
-        })) as Receipt[];
+        // Filter previous period data
+        const previousPeriodData = allReceipts.filter((receipt) => {
+          const receiptDate = receipt.createdAt?.toDate() || new Date(0);
+          return receiptDate >= twoDaysAgo && receiptDate < yesterday;
+        });
 
-        const previousPeriodQuery = query(
-          collection(db, "receipts"),
-          where("createdAt", ">=", Timestamp.fromDate(twoDaysAgo)),
-          where("createdAt", "<", Timestamp.fromDate(yesterday))
-        );
-        const previousPeriodSnapshot = await getDocs(previousPeriodQuery);
-        const previousPeriodData = previousPeriodSnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-          createdAt: doc.data().createdAt,
-        })) as Receipt[];
-
-        // Calculate total sales for all receipts
+        // Calculate total sales for all user's receipts
         const totalSalesAmount = allReceipts.reduce((sum, receipt) => {
           const receiptTotal = receipt.items.reduce(
             (itemSum: number, item: Items) => itemSum + item.total,
@@ -174,6 +173,16 @@ export const Dashboard = () => {
           0
         );
 
+        const currentPeriodAverage =
+          currentPeriodData.length > 0
+            ? currentPeriodSales / currentPeriodData.length
+            : 0;
+
+        const previousPeriodAverage =
+          previousPeriodData.length > 0
+            ? previousPeriodSales / previousPeriodData.length
+            : 0;
+
         setTotalSales({
           current: totalSalesAmount,
           previous: previousPeriodSales,
@@ -191,11 +200,8 @@ export const Dashboard = () => {
 
         setAverageOrder({
           current: averageOrderAmount,
-          previous: previousPeriodSales / (previousPeriodData.length || 1),
-          change: calculateChange(
-            currentPeriodSales / (currentPeriodData.length || 1),
-            previousPeriodSales / (previousPeriodData.length || 1)
-          ),
+          previous: previousPeriodAverage,
+          change: calculateChange(currentPeriodAverage, previousPeriodAverage),
         });
 
         // Format and set the display data - only take the last 3 receipts
@@ -236,7 +242,7 @@ export const Dashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   const stats = [
     {

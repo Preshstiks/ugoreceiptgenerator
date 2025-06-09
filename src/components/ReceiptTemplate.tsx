@@ -84,7 +84,7 @@ export const ReceiptTemplate = ({
       style={{ backgroundColor: "#ffffff" }}
     >
       {/* Header */}
-      <div className="text-center mb-2 pb-3 font-sc-light">
+      <div className="text-center mb-2 pt-4 pb-3 font-sc-regular">
         <div className="flex justify-center">
           <img src={logo} alt="logo" className="rounded-lg w-[70px]" />
         </div>
@@ -106,7 +106,7 @@ export const ReceiptTemplate = ({
 
       {/* Receipt Info */}
       <div
-        className="border-y border-dashed font-sc-light pt-1 pb-3 mb-2"
+        className="border-y border-dashed font-sc-regular pt-1 pb-3 mb-2"
         style={{ borderColor: "#9CA3AF" }}
       >
         <div className="pb-2">
@@ -163,7 +163,7 @@ export const ReceiptTemplate = ({
         {data.items.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-12 font-sc-light text-sm py-1"
+            className="grid grid-cols-12 font-sc-regular text-sm py-1"
           >
             <div className="col-span-6" style={{ color: "#4B5563" }}>
               {item.productType === "bottled"
@@ -208,7 +208,7 @@ export const ReceiptTemplate = ({
       )}
 
       {/* Footer */}
-      <div className="text-center font-sc-light text-sm">
+      <div className="text-center font-sc-regular text-sm">
         <p style={{ color: "#4B5563" }}>Thank you for your patronage!</p>
         <p className="mt-2" style={{ color: "#4B5563" }}>
           Please come again

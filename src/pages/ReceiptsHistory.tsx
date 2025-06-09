@@ -5,14 +5,17 @@ import {
   doc,
   Timestamp,
   writeBatch,
+  query,
+  where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FiSearch, FiFilter, FiDownload, FiTrash2, FiX } from "react-icons/fi";
+import { FiSearch, FiFilter, FiTrash2, FiX } from "react-icons/fi";
 import { db } from "../firebase/init";
 import { ReceiptPreviewModal } from "../components/ReceiptPreviewModal";
 import { usePDF } from "react-to-pdf";
 import { ReceiptTemplate } from "../components/ReceiptTemplate";
 import { ClipLoader } from "react-spinners";
+import { useAuth } from "../context/AuthContext";
 
 interface Items {
   name: string;
@@ -101,6 +104,7 @@ const numberInputStyles = `
 `;
 
 export const ReceiptsHistory = () => {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [data, setData] = useState<Receipt[]>([]);
   const [filteredData, setFilteredData] = useState<Receipt[]>([]);
@@ -146,7 +150,16 @@ export const ReceiptsHistory = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const querySnapshot = await getDocs(collection(db, "receipts"));
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
+
+        const receiptsQuery = query(
+          collection(db, "receipts"),
+          where("userId", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(receiptsQuery);
         const items = querySnapshot.docs.map((doc) => {
           const data = doc.data();
           const createdAt = data.createdAt?.toDate();
@@ -192,7 +205,7 @@ export const ReceiptsHistory = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     // Apply search and filters
@@ -294,7 +307,11 @@ export const ReceiptsHistory = () => {
     try {
       const batch = writeBatch(db);
       const receiptsRef = collection(db, "receipts");
-      const querySnapshot = await getDocs(receiptsRef);
+      const receiptsQuery = query(
+        receiptsRef,
+        where("userId", "==", user?.uid)
+      );
+      const querySnapshot = await getDocs(receiptsQuery);
 
       querySnapshot.docs.forEach((doc) => {
         batch.delete(doc.ref);
@@ -604,31 +621,26 @@ export const ReceiptsHistory = () => {
                         </div>
                       </div>
                     </div>
+                    <div className="text-center">
+                      <p className="text-sm font-rubik-medium text-gray-900">
+                        ₦
+                        {receipt.items
+                          .reduce((sum, item) => sum + item.total, 0)
+                          .toLocaleString()}
+                      </p>
+                      <p className="text-[10px]  text-gray-500">
+                        {receipt.items.length}{" "}
+                        {receipt.items.length === 1 ? "item" : "items"}
+                      </p>
+                    </div>
                     <div className="flex items-center space-x-4">
-                      <div className="text-center">
-                        <p className="text-sm font-rubik-medium text-gray-900">
-                          ₦
-                          {receipt.items
-                            .reduce((sum, item) => sum + item.total, 0)
-                            .toLocaleString()}
-                        </p>
-                        <p className="text-[10px]  text-gray-500">
-                          {receipt.items.length}{" "}
-                          {receipt.items.length === 1 ? "item" : "items"}
-                        </p>
-                      </div>
                       <button
                         onClick={() => handleView(receipt)}
                         className="text-gray-600 hover:text-gray-500 hover:bg-gray-100 rounded-lg transition-colors p-2 text-[11px] hover:underline cursor-pointer"
                       >
                         View
                       </button>
-                      <button
-                        onClick={() => handleDownload(receipt)}
-                        className="p-2 text-gray-600 hover:text-blue-500 cursor-pointer hover:bg-blue-100 rounded-lg transition-colors"
-                      >
-                        <FiDownload className="h-4 w-4" />
-                      </button>
+
                       <button
                         onClick={() => {
                           setSelectedReceiptId(receipt.id);

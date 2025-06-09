@@ -165,7 +165,6 @@ export const GenerateReceipt = () => {
       await addDoc(collection(db, "receipts"), receiptData);
       toast.success("Receipt saved successfully!");
 
-      // Reset form
       setFormData({
         customerName: "",
         date: new Date().toLocaleDateString("en-US", {
@@ -313,13 +312,10 @@ export const GenerateReceipt = () => {
                 Date
               </label>
               <input
-                type="date"
+                type="text"
                 value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-                className="w-full px-4 text-sm py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent transition-colors"
-                required
+                readOnly
+                className="w-full px-4 text-sm py-2.5 border border-gray-200 rounded-lg bg-gray-50 cursor-not-allowed"
               />
             </div>
 
@@ -328,13 +324,10 @@ export const GenerateReceipt = () => {
                 Time
               </label>
               <input
-                type="time"
+                type="text"
                 value={formData.time}
-                onChange={(e) =>
-                  setFormData({ ...formData, time: e.target.value })
-                }
-                className="w-full px-4 text-sm py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-transparent transition-colors"
-                required
+                readOnly
+                className="w-full px-4 text-sm py-2.5 border border-gray-200 rounded-lg bg-gray-50 cursor-not-allowed"
               />
             </div>
           </div>
