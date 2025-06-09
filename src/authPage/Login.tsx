@@ -176,7 +176,7 @@ export const Login = () => {
                   name="rememberMe"
                   type="checkbox"
                   disabled={isLoading}
-                  className="h-4 w-4 rounded border-gray-300 text-black focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="h-4 w-4 rounded cursor-pointer border-gray-300 text-black focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <label
                   htmlFor="rememberMe"
@@ -189,7 +189,7 @@ export const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading || isSubmitting}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex cursor-pointer justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   <div className="flex items-center">

@@ -285,7 +285,7 @@ export const Dashboard = () => {
         </div>
         <button
           onClick={() => (window.location.href = "/dashboard/generate-receipt")}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+          className="inline-flex cursor-pointer items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors"
         >
           <FiPlus className="mr-2" />
           New Receipt
