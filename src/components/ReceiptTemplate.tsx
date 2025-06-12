@@ -79,26 +79,26 @@ export const ReceiptTemplate = ({
 
   return (
     <div
-      className="w-[300px] p-4"
+      className="w-[350px] p-4"
       id="receipt-template"
       style={{ backgroundColor: "#ffffff" }}
     >
       {/* Header */}
-      <div className="text-center mb-2 pt-4 pb-3 font-sc-regular">
+      <div className="text-center mb-2 pt-4 pb-3 font-sc-medium">
         <div className="flex justify-center">
-          <img src={logo} alt="logo" className="rounded-lg w-[70px]" />
+          <img src={logo} alt="logo" className="rounded-lg w-[110px]" />
         </div>
-        <h1 className="text-sm font-sc-regular mb-1 text-black">
+        <h1 className="font-sc-semi-bold mb-1 text-black">
           {companyDetails?.name || "Ugo H²0 (water) Nigeria Ltd"}
         </h1>
-        <p className="text-xs mb-1" style={{ color: "#374151" }}>
+        <p className="text-[15px] mb-1 text-black">
           {companyDetails?.address ||
             "Along Mararaba - Guruku Road, Aso B, Nasarawa State."}
         </p>
-        <p className="text-xs mb-1" style={{ color: "#374151" }}>
+        <p className="text-[15px] mb-1 text-black">
           {companyDetails?.email || "ifemene@gmail.com"}
         </p>
-        <p className="text-xs" style={{ color: "#374151" }}>
+        <p className="text-[15px] text-black">
           Phone:{" "}
           {companyDetails?.phone?.join(", ") || "08024872208, 09063762319"}
         </p>
@@ -106,47 +106,31 @@ export const ReceiptTemplate = ({
 
       {/* Receipt Info */}
       <div
-        className="border-y border-dashed font-sc-regular pt-1 pb-3 mb-2"
+        className="border-y border-dashed text-black font-sc-medium pt-1 pb-3 mb-2"
         style={{ borderColor: "#9CA3AF" }}
       >
         <div className="pb-2">
-          <p className="text-sm" style={{ color: "#374151" }}>
-            Receipt ID:
-          </p>
-          <p className="text-sm" style={{ color: "#374151" }}>
-            #{Math.floor(Math.random() * 1000000)}
-          </p>
+          <p>Receipt ID:</p>
+          <p>#{Math.floor(Math.random() * 1000000)}</p>
         </div>
         <div className="pb-2">
-          <p className="text-sm" style={{ color: "#374151" }}>
-            Date:
-          </p>
-          <p className="text-sm" style={{ color: "#374151" }}>
-            {currentDate}
-          </p>
+          <p>Date:</p>
+          <p>{currentDate}</p>
         </div>
         <div className="pb-2">
-          <p className="text-sm" style={{ color: "#374151" }}>
-            Time:
-          </p>
-          <p className="text-sm" style={{ color: "#374151" }}>
-            {currentTime}
-          </p>
+          <p>Time:</p>
+          <p>{currentTime}</p>
         </div>
         <div className="pb-2">
-          <p className="text-sm" style={{ color: "#374151" }}>
-            Customer Name:
-          </p>
-          <p className="text-sm" style={{ color: "#374151" }}>
-            {data.customerName}
-          </p>
+          <p>Customer Name:</p>
+          <p>{data.customerName}</p>
         </div>
       </div>
 
       {/* Items */}
       <div className="mb-4">
         <div
-          className="grid grid-cols-12 font-sc-bold text-sm border-b pb-3"
+          className="grid grid-cols-12 font-sc-bold border-b pb-3"
           style={{ borderColor: "#9CA3AF" }}
         >
           <div className="col-span-6" style={{ color: "#111827" }}>
@@ -163,17 +147,15 @@ export const ReceiptTemplate = ({
         {data.items.map((item, index) => (
           <div
             key={index}
-            className="grid grid-cols-12 font-sc-regular text-sm py-1"
+            className="grid grid-cols-12 text-black font-sc-medium py-1"
           >
-            <div className="col-span-6" style={{ color: "#4B5563" }}>
+            <div className="col-span-6">
               {item.productType === "bottled"
                 ? "Bottled Water"
                 : "Satchet Water"}
             </div>
-            <div className="col-span-2 text-right" style={{ color: "#4B5563" }}>
-              {item.quantity}
-            </div>
-            <div className="col-span-4 text-right" style={{ color: "#4B5563" }}>
+            <div className="col-span-2 text-right">{item.quantity}</div>
+            <div className="col-span-4 text-right">
               ₦{item.price.toLocaleString()}
             </div>
           </div>
@@ -185,34 +167,28 @@ export const ReceiptTemplate = ({
         className="border-t border-b border-dashed pt-2 pb-3 mb-4"
         style={{ borderColor: "#9CA3AF" }}
       >
-        <div className="flex justify-between text-sm font-sc-regular">
-          <span style={{ color: "#4B5563" }}>Subtotal:</span>
-          <span style={{ color: "#4B5563" }}>₦{subtotal.toLocaleString()}</span>
+        <div className="flex justify-between font-sc-medium">
+          <span>Subtotal:</span>
+          <span>₦{subtotal.toLocaleString()}</span>
         </div>
-        <div className="flex justify-between text-sm font-sc-bold">
-          <span style={{ color: "#111827" }}>Total:</span>
-          <span style={{ color: "#111827" }}>₦{total.toLocaleString()}</span>
+        <div className="flex justify-between font-sc-bold">
+          <span>Total:</span>
+          <span>₦{total.toLocaleString()}</span>
         </div>
       </div>
 
       {/* Notes */}
       {data.notes && (
         <div className="mb-4">
-          <p className="text-sm font-sc-medium" style={{ color: "#111827" }}>
-            Notes:
-          </p>
-          <p className="text-sm font-sc-regular" style={{ color: "#4B5563" }}>
-            {data.notes}
-          </p>
+          <p className="font-sc-medium">Notes:</p>
+          <p className="font-sc-regular">{data.notes}</p>
         </div>
       )}
 
       {/* Footer */}
-      <div className="text-center font-sc-regular text-sm">
-        <p style={{ color: "#4B5563" }}>Thank you for your patronage!</p>
-        <p className="mt-2" style={{ color: "#4B5563" }}>
-          Please come again
-        </p>
+      <div className="text-center font-sc-regular">
+        <p>Thank you for your patronage!</p>
+        <p className="mt-2">Please come again</p>
       </div>
     </div>
   );
